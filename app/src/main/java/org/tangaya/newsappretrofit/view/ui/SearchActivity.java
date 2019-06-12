@@ -32,7 +32,7 @@ public class SearchActivity extends AppCompatActivity implements SearchNavigator
 
         Log.d("SearchActivity", "searching news by keyword: " + keyword);
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, SearchResultActivity.class);
         intent.putExtra("keyword", keyword);
         startActivity(intent);
     }

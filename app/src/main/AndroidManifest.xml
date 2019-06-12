@@ -18,7 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.ui.MainActivity"></activity>
+        <activity android:name=".view.ui.SearchResultActivity" />
+        <activity android:name=".view.ui.NewsPageActivity"></activity>
     </application>
 
 </manifest>
