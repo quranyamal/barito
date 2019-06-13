@@ -1,13 +1,29 @@
 package org.tangaya.newsappretrofit.view.ui;
 
+import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.tangaya.newsappretrofit.R;
+import org.tangaya.newsappretrofit.adapter.ArticleAdapter;
+import org.tangaya.newsappretrofit.data.model.APIResponse;
+import org.tangaya.newsappretrofit.data.source.NewsService;
+import org.tangaya.newsappretrofit.data.source.RESTClient;
+import org.tangaya.newsappretrofit.view.listener.NewsRecyclerTouchListener;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +44,11 @@ public class HeadlineFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private ArticleAdapter adapter;
+    private RecyclerView recyclerView;
+    ProgressDialog progressDialog;
+    String searchKeyword;
 
     public HeadlineFragment() {
         // Required empty public constructor
@@ -67,7 +88,74 @@ public class HeadlineFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_headline, container, false);
 
+
+        handleIntent(getActivity().getIntent());
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("mengambil data artikel...");
+        progressDialog.show();
+
+        NewsService service = RESTClient.getInstance().create(NewsService.class);
+
+        //Call<APIResponse> articlesCall = service.getHeadlineNews();
+
+        Call<APIResponse> articlesCall = service.getHeadlineNews();
+        articlesCall.enqueue(new Callback<APIResponse>() {
+
+            @Override
+            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                Log.d("enqueue", "onResponse. response: " + response);
+
+                progressDialog.dismiss();
+                generateDataList(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(getActivity(), "Ups, terdapat kesalahan :(", Toast.LENGTH_SHORT).show();
+
+                Log.d("onFailure call", call.toString());
+                Log.d("onFailure throwable", t.toString());
+            }
+        });
+
         return rootView;
+    }
+
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+
+            Toast.makeText(getActivity().getApplicationContext(), "search for " + query, Toast.LENGTH_SHORT).show();
+            if (searchKeyword == null) {
+                searchKeyword = query;
+            }
+        }
+    }
+
+    private void generateDataList(final APIResponse apiResponse) {
+
+        Log.d("SearchResultActivity", "articleList size: " + apiResponse.getArticles().size());
+        recyclerView = getActivity().findViewById(R.id.headline_recycler);
+
+        adapter = new ArticleAdapter(getActivity(), apiResponse.getArticles());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnItemTouchListener(new NewsRecyclerTouchListener(getActivity().getApplicationContext(),
+                recyclerView, new NewsRecyclerTouchListener.ClickListener() {
+
+            @Override
+            public void onClick(View view, int position) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), NewsPageActivity.class);
+                intent.putExtra("url", apiResponse.getArticles().get(position).getUrl());
+
+                startActivity(intent);
+
+            }
+        }));
     }
 
     // TODO: Rename method, update argument and hook method into UI event

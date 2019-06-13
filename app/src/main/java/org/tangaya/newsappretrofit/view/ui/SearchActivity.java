@@ -10,21 +10,22 @@ import org.tangaya.newsappretrofit.R;
 import org.tangaya.newsappretrofit.databinding.ActivitySearchBinding;
 import org.tangaya.newsappretrofit.view.navigator.SearchNavigator;
 import org.tangaya.newsappretrofit.viewmodel.SearchViewModel;
+import org.tangaya.newsappretrofit.viewmodel.SearchViewModelOld;
 
 public class SearchActivity extends AppCompatActivity implements SearchNavigator {
 
-    private SearchViewModel viewModel;
+    private SearchViewModelOld viewModel;
     private ActivitySearchBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        viewModel = new SearchViewModel();
+        viewModel = new SearchViewModelOld();
         viewModel.onActivityCreated(this);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
-        binding.setViewmodel(viewModel);
+        // binding.setViewmodel(viewModel);
     }
 
     @Override
