@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private ArticleAdapter adapter;
     private RecyclerView recyclerView;
@@ -37,20 +38,61 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
+
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
-        searchKeyword = "joko";
         //setTitle("Cari Berita: " + searchKeyword);
 
         handleIntent(getActivity().getIntent());
+
+        return rootView;
+    }
+
+//    @Override
+//    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
+//        inflater.inflate(R.menu.search, menu);
+//        MenuItem item = menu.findItem(R.id.action_search);
+//        SearchView sv = new SearchView(((YourActivity) getActivity()).getSupportActionBar().getThemedContext());
+//        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+//        MenuItemCompat.setActionView(item, sv);
+//        sv.setOnQueryTextListener(new OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                System.out.println("search query submit");
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                System.out.println("tap");
+//                return false;
+//            }
+//        });
+//    }
+
+    private void handleIntent(Intent intent) {
+        Log.d("SearchFragment", "handleIntent()");
+
+        try {
+         searchKeyword = getActivity().getIntent().getExtras().getString("keyword");
+        } catch (NullPointerException e) {
+            Log.e("SearchFragment", "NullPointerException");
+            searchKeyword = "solok";
+        }
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+
+            Toast.makeText(getActivity().getApplicationContext(), "search for " + query, Toast.LENGTH_SHORT).show();
+            if (searchKeyword == null) {
+                searchKeyword = query;
+            }
+        }
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("mengambil data artikel...");
         progressDialog.show();
 
         NewsService service = RESTClient.getInstance().create(NewsService.class);
-
-        //Call<APIResponse> articlesCall = service.getHeadlineNews();
 
         Call<APIResponse> articlesCall = service.getNewsByKeyword(searchKeyword, NewsService.API_KEY);
         articlesCall.enqueue(new Callback<APIResponse>() {
@@ -72,25 +114,18 @@ public class SearchFragment extends Fragment {
                 Log.d("onFailure throwable", t.toString());
             }
         });
-
-        return rootView;
     }
 
-//    @Override
-//    protected void onNewIntent(Intent intent) {
-//        handleIntent(intent);
-//    }
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Toast.makeText(getActivity(), query + " submitted", Toast.LENGTH_SHORT).show();
+        return false;
+    }
 
-    private void handleIntent(Intent intent) {
-
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-
-            Toast.makeText(getActivity().getApplicationContext(), "search for " + query, Toast.LENGTH_SHORT).show();
-            if (searchKeyword == null) {
-                searchKeyword = query;
-            }
-        }
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Toast.makeText(getActivity(), newText, Toast.LENGTH_SHORT).show();
+        return false;
     }
 
     private void generateDataList(final APIResponse apiResponse) {

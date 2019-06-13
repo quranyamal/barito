@@ -89,7 +89,7 @@ public class HeadlineFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_headline, container, false);
 
 
-        handleIntent(getActivity().getIntent());
+//        handleIntent(getActivity().getIntent());
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("mengambil data artikel...");
@@ -123,17 +123,17 @@ public class HeadlineFragment extends Fragment {
         return rootView;
     }
 
-    private void handleIntent(Intent intent) {
-
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-
-            Toast.makeText(getActivity().getApplicationContext(), "search for " + query, Toast.LENGTH_SHORT).show();
-            if (searchKeyword == null) {
-                searchKeyword = query;
-            }
-        }
-    }
+//    private void handleIntent(Intent intent) {
+//
+//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+//            String query = intent.getStringExtra(SearchManager.QUERY);
+//
+//            Toast.makeText(getActivity().getApplicationContext(), "search for " + query, Toast.LENGTH_SHORT).show();
+//            if (searchKeyword == null) {
+//                searchKeyword = query;
+//            }
+//        }
+//    }
 
     private void generateDataList(final APIResponse apiResponse) {
 
