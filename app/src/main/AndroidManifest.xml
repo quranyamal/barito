@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.tangaya.newsappretrofit">
+    package="org.tangaya.barito">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -11,10 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.ui.SearchActivity">
+        <activity android:name="org.tangaya.barito.view.ui.SearchActivity">
         </activity>
 
-        <activity android:name=".view.ui.SearchResultActivity">
+        <activity android:name="org.tangaya.barito.view.ui.SearchResultActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -23,8 +23,8 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".view.ui.NewsPageActivity" />
-        <activity android:name=".view.ui.MainActivity">
+        <activity android:name="org.tangaya.barito.view.ui.NewsPageActivity" />
+        <activity android:name="org.tangaya.barito.view.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
