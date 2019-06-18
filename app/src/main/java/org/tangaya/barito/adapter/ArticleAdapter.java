@@ -2,6 +2,7 @@ package org.tangaya.barito.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.CustomVi
 
     @Override
     public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d("onCreateViewHolder", "onCreateViewHolder");
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.card_news, parent, false);
         return new CustomViewHolder(view);
@@ -51,6 +53,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.CustomVi
 
     @Override
     public void onBindViewHolder(CustomViewHolder holder, int position) {
+        Log.d("onBindViewHolder", "bind-1"+position);
         holder.txtTitle.setText(dataList.get(position).getTitle());
 
         Picasso.Builder builder = new Picasso.Builder(context);
