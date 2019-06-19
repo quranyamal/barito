@@ -13,7 +13,7 @@ public class NewsPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_page);
 
-        WebView myWebView = (WebView) findViewById(R.id.news_webview);
+        WebView myWebView = findViewById(R.id.news_webview);
         String url = getIntent().getStringExtra("url");
         myWebView.loadUrl(url);
     }

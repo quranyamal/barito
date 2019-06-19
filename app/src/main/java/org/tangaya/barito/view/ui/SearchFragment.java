@@ -38,37 +38,12 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
-
-        //setTitle("Cari Berita: " + searchKeyword);
 
         handleIntent(getActivity().getIntent());
 
         return rootView;
     }
-
-//    @Override
-//    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
-//        inflater.inflate(R.menu.search, menu);
-//        MenuItem item = menu.findItem(R.id.action_search);
-//        SearchView sv = new SearchView(((YourActivity) getActivity()).getSupportActionBar().getThemedContext());
-//        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-//        MenuItemCompat.setActionView(item, sv);
-//        sv.setOnQueryTextListener(new OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                System.out.println("search query submit");
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                System.out.println("tap");
-//                return false;
-//            }
-//        });
-//    }
 
     private void handleIntent(Intent intent) {
         Log.d("SearchFragment", "handleIntent()");
@@ -89,7 +64,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("mengambil data artikel...");
+        progressDialog.setMessage("loading news...");
         progressDialog.show();
 
         NewsApi service = RetrofitService.createService(NewsApi.class);
@@ -138,17 +113,13 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new NewsRecyclerTouchListener(getActivity().getApplicationContext(),
-                recyclerView, new NewsRecyclerTouchListener.ClickListener() {
+                recyclerView, (view, position) -> {
+                    Intent intent = new Intent(getActivity().getApplicationContext(), NewsPageActivity.class);
+                    intent.putExtra("url", apiResponse.getArticles().get(position).getUrl());
 
-            @Override
-            public void onClick(View view, int position) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), NewsPageActivity.class);
-                intent.putExtra("url", apiResponse.getArticles().get(position).getUrl());
+                    startActivity(intent);
 
-                startActivity(intent);
-
-            }
-        }));
+                }));
     }
 
 }

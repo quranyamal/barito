@@ -1,9 +1,6 @@
 package org.tangaya.barito.view.ui;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.SearchManager;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -33,35 +29,14 @@ public class MainActivity extends AppCompatActivity implements HeadlineFragment.
         super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
-        Log.d("MainActivity", "onCreate 1");
-
         ViewPagerAdapter vpAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        Log.d("MainActivity", "onCreate 2");
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-//        ViewPager viewPager = findViewById(R.id.view_pager);
-        final ViewPager viewPager =(ViewPager)findViewById(R.id.view_pager);
-        Log.d("MainActivity", "onCreate 3");
+        ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(vpAdapter);
 
-        Log.d("MainActivity", "onCreate 4");
-//        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
-
-//        HeadlineFragment headlineFragment = obtainHeadlineFragment();
-//        FragmentManager fragmentManager = getFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.
-
-//        handleIntent(getIntent());
     }
-
-//    @Override
-//    public void onCreateView(View view, Bundle savedInstanceState) {
-//        vpAdapter = new ViewPagerAdapter(getChildFragmentManager());
-//        viewPager = view.findViewById(R.id.view_pager);
-//        viewPager.setAdapter(vpAdapter);
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -74,6 +49,20 @@ public class MainActivity extends AppCompatActivity implements HeadlineFragment.
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                Log.d("onQueryTextSubmit", "string: " + s);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                Log.d("onQueryTextChange", "string: " + s);
+                return false;
+            }
+        });
 
         return true;
     }
