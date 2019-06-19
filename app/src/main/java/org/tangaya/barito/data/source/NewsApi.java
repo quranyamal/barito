@@ -6,7 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface NewsService {
+public interface NewsApi {
 
     String API_KEY = "411b30da03f24aed986d77e276aec72e";
 

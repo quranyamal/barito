@@ -1,29 +1,31 @@
 package org.tangaya.barito.view.ui;
 
 import android.app.ProgressDialog;
-import android.app.SearchManager;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.view.ViewParent;
 
 import org.tangaya.barito.R;
 import org.tangaya.barito.adapter.ArticleAdapter;
+import org.tangaya.barito.adapter.ViewPagerAdapter;
 import org.tangaya.barito.data.model.APIResponse;
-import org.tangaya.barito.data.source.NewsService;
-import org.tangaya.barito.data.source.RESTClient;
+import org.tangaya.barito.data.model.Article;
 import org.tangaya.barito.view.listener.NewsRecyclerTouchListener;
+import org.tangaya.barito.viewmodel.MainViewModel;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,102 +47,95 @@ public class HeadlineFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    ArrayList<Article> articleArrayList = new ArrayList<>();
     private ArticleAdapter adapter;
     private RecyclerView recyclerView;
+    private MainViewModel mViewModel;
+
     ProgressDialog progressDialog;
     String searchKeyword;
+
+    ViewPagerAdapter vpAdapter;
+    ViewPager viewPager;
 
     public HeadlineFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HeadlineFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HeadlineFragment newInstance(String param1, String param2) {
-        HeadlineFragment fragment = new HeadlineFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+//        loadHeadline();
+    }
+
+//    private void loadHeadline() {
+//        progressDialog = new ProgressDialog(getActivity());
+//        progressDialog.setMessage("mengambil data artikel...");
+//        progressDialog.show();
+//
+//        mViewModel.getHeadlineRepository();
+//    }
+
+//    public static HeadlineFragment newInstance(String param1, String param2) {
+//        HeadlineFragment fragment = new HeadlineFragment();
+//        Bundle args = new Bundle();
+//        args.putString(ARG_PARAM1, param1);
+//        args.putString(ARG_PARAM2, param2);
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
+
+    public static HeadlineFragment newInstance() {
+        return new HeadlineFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+//        if (getArguments() != null) {
+//            mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam2 = getArguments().getString(ARG_PARAM2);
+//        }
+
+//        getActivity().setContentView(R.layout.fragment_headline);
+
+        mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        mViewModel.init();
+        mViewModel.getHeadlineRepository().observe(getActivity(), apiResponse -> {
+            List<Article> headlineArtice = apiResponse.getArticles();
+            articleArrayList.addAll(headlineArtice);
+            adapter.notifyDataSetChanged();
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        super.onCreateView(inflater, container, savedInstanceState);
-        View rootView = inflater.inflate(R.layout.fragment_headline, container, false);
+//        super.onCreateView(inflater, container, savedInstanceState);
 
+        View view = inflater.inflate(R.layout.fragment_headline, container, false);
 
-//        handleIntent(getActivity().getIntent());
-
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("mengambil data artikel...");
-        progressDialog.show();
-
-        NewsService service = RESTClient.getInstance().create(NewsService.class);
-
-        //Call<APIResponse> articlesCall = service.getHeadlineNews();
-
-        Call<APIResponse> articlesCall = service.getHeadlineNews();
-        articlesCall.enqueue(new Callback<APIResponse>() {
-
-            @Override
-            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                Log.d("enqueue", "onResponse. response: " + response);
-
-                progressDialog.dismiss();
-                generateDataList(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<APIResponse> call, Throwable t) {
-                progressDialog.dismiss();
-                Toast.makeText(getActivity(), "Ups, terdapat kesalahan :(", Toast.LENGTH_SHORT).show();
-
-                Log.d("onFailure call", call.toString());
-                Log.d("onFailure throwable", t.toString());
-            }
-        });
-
-        return rootView;
+        return view;
     }
 
-//    private void handleIntent(Intent intent) {
-//
-//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//            String query = intent.getStringExtra(SearchManager.QUERY);
-//
-//            Toast.makeText(getActivity().getApplicationContext(), "search for " + query, Toast.LENGTH_SHORT).show();
-//            if (searchKeyword == null) {
-//                searchKeyword = query;
-//            }
-//        }
-//    }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+//        vpAdapter = new ViewPagerAdapter(getChildFragmentManager());
+//        viewPager = view.findViewById(R.id.view_pager);
+//        viewPager.setAdapter(vpAdapter);
 
-    private void generateDataList(final APIResponse apiResponse) {
+        setupRecyclerView(view);
 
-        Log.d("SearchResultActivity", "articleList size: " + apiResponse.getArticles().size());
-        recyclerView = getActivity().findViewById(R.id.headline_recycler);
+    }
 
-        adapter = new ArticleAdapter(getActivity(), apiResponse.getArticles());
+    private void setupRecyclerView(View parent) {
+        recyclerView = parent.findViewById(R.id.headline_recycler);
+
+        if (adapter == null) {
+            adapter = new ArticleAdapter(getActivity(), articleArrayList);
+        }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -150,7 +145,7 @@ public class HeadlineFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), NewsPageActivity.class);
-                intent.putExtra("url", apiResponse.getArticles().get(position).getUrl());
+                intent.putExtra("url", articleArrayList.get(position).getUrl());
 
                 startActivity(intent);
 
@@ -165,16 +160,16 @@ public class HeadlineFragment extends Fragment {
         }
     }
 
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
 
     @Override
     public void onDetach() {

@@ -18,8 +18,8 @@ import android.widget.Toast;
 import org.tangaya.barito.R;
 import org.tangaya.barito.adapter.ArticleAdapter;
 import org.tangaya.barito.data.model.APIResponse;
-import org.tangaya.barito.data.source.NewsService;
-import org.tangaya.barito.data.source.RESTClient;
+import org.tangaya.barito.data.source.NewsApi;
+import org.tangaya.barito.data.source.RetrofitService;
 import org.tangaya.barito.view.listener.NewsRecyclerTouchListener;
 
 import retrofit2.Call;
@@ -92,9 +92,9 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         progressDialog.setMessage("mengambil data artikel...");
         progressDialog.show();
 
-        NewsService service = RESTClient.getInstance().create(NewsService.class);
+        NewsApi service = RetrofitService.createService(NewsApi.class);
 
-        Call<APIResponse> articlesCall = service.getNewsByKeyword(searchKeyword, NewsService.API_KEY);
+        Call<APIResponse> articlesCall = service.getNewsByKeyword(searchKeyword, NewsApi.API_KEY);
         articlesCall.enqueue(new Callback<APIResponse>() {
 
             @Override
