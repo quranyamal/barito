@@ -2,6 +2,7 @@ package org.tangaya.barito.view.ui;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,13 +19,12 @@ import android.widget.Toast;
 import org.tangaya.barito.R;
 import org.tangaya.barito.adapter.ArticleAdapter;
 import org.tangaya.barito.data.model.APIResponse;
-import org.tangaya.barito.data.source.NewsApi;
-import org.tangaya.barito.data.source.RetrofitService;
+import org.tangaya.barito.data.model.Article;
 import org.tangaya.barito.view.listener.NewsRecyclerTouchListener;
+import org.tangaya.barito.viewmodel.MainViewModel;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchFragment extends Fragment implements SearchView.OnQueryTextListener {
 
@@ -32,6 +32,24 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     private RecyclerView recyclerView;
     ProgressDialog progressDialog;
     String searchKeyword;
+
+    private MainViewModel mViewModel;
+    ArrayList<Article> searchResultArticles = new ArrayList<>();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+//        mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+//        mViewModel.init();
+//        mViewModel.getNewsRepository().observe(getActivity(), apiResponse -> {
+//            if (apiResponse != null) {
+//                List<Article> headlineArtice = apiResponse.getArticles();
+//                searchResultArticles.addAll(headlineArtice);
+//                adapter.notifyDataSetChanged();
+//            }
+//        });
+    }
 
     @Nullable
     @Override
@@ -61,34 +79,36 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
             if (searchKeyword == null) {
                 searchKeyword = query;
             }
+
+//            progressDialog = new ProgressDialog(getActivity());
+//            progressDialog.setMessage("loading news...");
+//            progressDialog.show();
+
+//            NewsApi service = RetrofitService.createService(NewsApi.class);
+//            Call<APIResponse> articlesCall = service.getNewsByKeyword(searchKeyword, NewsApi.API_KEY);
+//            articlesCall.enqueue(new Callback<APIResponse>() {
+//
+//                @Override
+//                public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+//                    Log.d("enqueue", "onResponse. response: " + response);
+//
+//                    progressDialog.dismiss();
+//                    generateDataList(response.body());
+//                }
+//
+//                @Override
+//                public void onFailure(Call<APIResponse> call, Throwable t) {
+//                    progressDialog.dismiss();
+//                    Toast.makeText(getActivity(), "Ups, terdapat kesalahan :(", Toast.LENGTH_SHORT).show();
+//
+//                    Log.d("onFailure call", call.toString());
+//                    Log.d("onFailure throwable", t.toString());
+//                }
+//            });
+
+//            generateDataList();
+
         }
-
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("loading news...");
-        progressDialog.show();
-
-        NewsApi service = RetrofitService.createService(NewsApi.class);
-
-        Call<APIResponse> articlesCall = service.getNewsByKeyword(searchKeyword, NewsApi.API_KEY);
-        articlesCall.enqueue(new Callback<APIResponse>() {
-
-            @Override
-            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                Log.d("enqueue", "onResponse. response: " + response);
-
-                progressDialog.dismiss();
-                generateDataList(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<APIResponse> call, Throwable t) {
-                progressDialog.dismiss();
-                Toast.makeText(getActivity(), "Ups, terdapat kesalahan :(", Toast.LENGTH_SHORT).show();
-
-                Log.d("onFailure call", call.toString());
-                Log.d("onFailure throwable", t.toString());
-            }
-        });
     }
 
     @Override
@@ -108,7 +128,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         Log.d("SearchResultActivity", "articleList size: " + apiResponse.getArticles().size());
         recyclerView = getActivity().findViewById(R.id.news_recycler);
 
-        adapter = new ArticleAdapter(getActivity(), apiResponse.getArticles());
+        adapter = new ArticleAdapter(getActivity());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

@@ -4,26 +4,30 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import org.tangaya.barito.data.model.APIResponse;
-import org.tangaya.barito.data.repository.HeadlineRepository;
+import org.tangaya.barito.data.model.Article;
+import org.tangaya.barito.data.repository.NewsRepository;
+import java.util.ArrayList;
 
 public class MainViewModel extends ViewModel {
 
-    private MutableLiveData<APIResponse> headlineLiveData;
-    private HeadlineRepository headlineRepository;
+    private NewsRepository newsRepository;
 
     public final MutableLiveData<Boolean> dataLoading = new MutableLiveData<>();
 
     public void init() {
 
-        if (headlineRepository != null) {
+        if (newsRepository != null) {
             return;
         }
-        headlineRepository = HeadlineRepository.getInstance();
-        headlineLiveData = headlineRepository.getHeadline();
+        newsRepository = NewsRepository.getInstance();
     }
 
-    public LiveData<APIResponse> getHeadlineRepository() {
-        return headlineLiveData;
+    public MutableLiveData<ArrayList<Article>> getHeadlines() {
+        return newsRepository.getHeadlines();
+    }
+
+    public LiveData<APIResponse> getNewsByKeyword(String keyword) {
+        return null;
     }
 
 }

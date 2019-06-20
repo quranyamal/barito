@@ -2,6 +2,7 @@ package org.tangaya.barito.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class APIResponse {
@@ -11,9 +12,9 @@ public class APIResponse {
     @SerializedName("totalResults")
     private int totalResults;
     @SerializedName("articles")
-    private List<Article> articles;
+    private ArrayList<Article> articles;
 
-    public APIResponse(String status, int totalResults, List<Article> articles) {
+    public APIResponse(String status, int totalResults, ArrayList<Article> articles) {
         this.status = status;
         this.totalResults = totalResults;
         this.articles = articles;
@@ -35,11 +36,11 @@ public class APIResponse {
         this.totalResults = totalResults;
     }
 
-    public List<Article> getArticles() {
+    public ArrayList<Article> getArticles() {
         return articles;
     }
 
-    public void setArticles(List<Article> articles) {
+    public void setArticles(ArrayList<Article> articles) {
         this.articles = articles;
     }
 }

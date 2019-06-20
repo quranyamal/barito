@@ -105,4 +105,16 @@ public class Article {
     public void setContent(String content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "source: " + source
+                + "\nauthor: " + author
+                + "\ntitle: " + title
+                + "\ndescription: " + description
+                + "\nurl: " + url
+                + "\nurlToImage: " + urlToImage
+                + "\npublishedAt: " + publishedAt
+                + "\ncontent: " + content;
+    }
 }

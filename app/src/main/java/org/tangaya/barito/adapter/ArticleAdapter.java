@@ -15,16 +15,16 @@ import com.squareup.picasso.Picasso;
 import org.tangaya.barito.R;
 import org.tangaya.barito.data.model.Article;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.CustomViewHolder> {
 
-    private List<Article> dataList;
+    private ArrayList<Article> data;
     private Context context;
 
-    public ArticleAdapter(Context context,List<Article> dataList){
+    public ArticleAdapter(Context context){
         this.context = context;
-        this.dataList = dataList;
+        this.data = new ArrayList<>();
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
@@ -53,19 +53,28 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.CustomVi
 
     @Override
     public void onBindViewHolder(CustomViewHolder holder, int position) {
-        Log.d("onBindViewHolder", "bind-1"+position);
-        holder.txtTitle.setText(dataList.get(position).getTitle());
+        Log.d("data-1"+position, ": "+ data.get(position).toString());
 
+        holder.txtTitle.setText(data.get(position).getTitle());
         Picasso.Builder builder = new Picasso.Builder(context);
         builder.downloader(new OkHttp3Downloader(context));
-        builder.build().load(dataList.get(position).getUrlToImage())
-                .placeholder((R.drawable.ic_launcher_background))
-                .error(R.drawable.ic_launcher_background)
-                .into(holder.coverImage);
+
+        String urlToImage = data.get(position).getUrlToImage();
+        if (!urlToImage.equals("")) {
+            builder.build().load(urlToImage)
+                    .placeholder((R.drawable.ic_launcher_background))
+                    .error(R.drawable.ic_launcher_background)
+                    .into(holder.coverImage);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return dataList.size();
+        return data.size();
+    }
+
+    public void setData(ArrayList<Article> newData) {
+        data.clear();
+        data.addAll(newData);
     }
 }
