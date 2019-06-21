@@ -59,9 +59,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.CustomVi
         Picasso.Builder builder = new Picasso.Builder(context);
         builder.downloader(new OkHttp3Downloader(context));
 
-        String urlToImage = data.get(position).getUrlToImage();
-        if (!urlToImage.equals("")) {
-            builder.build().load(urlToImage)
+        if (data.get(position).getUrlToImage() != null) {
+            builder.build().load(data.get(position).getUrlToImage())
                     .placeholder((R.drawable.ic_launcher_background))
                     .error(R.drawable.ic_launcher_background)
                     .into(holder.coverImage);

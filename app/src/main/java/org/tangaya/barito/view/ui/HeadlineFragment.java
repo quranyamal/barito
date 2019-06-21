@@ -34,6 +34,20 @@ public class HeadlineFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        mViewModel = ((MainActivity) getActivity()).getMainViewModel();
+        mViewModel.init();
+
+        adapter = new ArticleAdapter(getActivity());
+
+        mViewModel.getHeadlines().observe(getActivity(), articles -> {
+            if (articles != null) {
+                adapter.setData(articles);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        setupRecyclerView(getView());
     }
 
     public static HeadlineFragment newInstance() {
@@ -43,17 +57,6 @@ public class HeadlineFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        mViewModel.init();
-        adapter = new ArticleAdapter(getActivity());
-
-        mViewModel.getHeadlines().observe(getActivity(), articles -> {
-            if (articles != null) {
-                adapter.setData(articles);
-                adapter.notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
@@ -66,7 +69,7 @@ public class HeadlineFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
-        setupRecyclerView(view);
+//        setupRecyclerView(view);
     }
 
     private void setupRecyclerView(View parent) {

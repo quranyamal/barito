@@ -1,6 +1,8 @@
 package org.tangaya.barito.data.repository;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.util.Log;
+
 import org.tangaya.barito.data.model.APIResponse;
 import org.tangaya.barito.data.model.Article;
 import org.tangaya.barito.data.source.NewsApi;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import timber.log.Timber;
 
 public class NewsRepository {
 
@@ -17,6 +20,7 @@ public class NewsRepository {
     private NewsApi service;
 
     private MutableLiveData<ArrayList<Article>> headlines, searchResult;
+    private MutableLiveData<Integer> resultCount;
 
     public static NewsRepository getInstance() {
         if (newsRepository == null) {
@@ -29,6 +33,7 @@ public class NewsRepository {
         service = RetrofitService.createService(NewsApi.class);
         headlines = new MutableLiveData<>();
         searchResult = new MutableLiveData<>();
+        resultCount = new MutableLiveData<>();
     }
 
     private void fetchHeadlines() {
@@ -54,12 +59,19 @@ public class NewsRepository {
     }
 
     public void searchNewsByKeyword(String keyword) {
+        Log.d("searchNewsByKeyword", "manual logging. keyword: "+keyword);
+        Timber.d("inside searchNewsByKeyword");
+
         Call<APIResponse> articlesCall = service.getNewsByKeyword(keyword, NewsApi.API_KEY);
         articlesCall.enqueue(new Callback<APIResponse>() {
             @Override
             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                Timber.d("inside onResponse");
                 if (response.isSuccessful()) {
+                    Timber.d(keyword + " submitted");
+                    Log.d("onResponse", response.toString());
                     searchResult.postValue(response.body().getArticles());
+                    resultCount.postValue(response.body().getTotalResults());
                 }
             }
 
@@ -72,5 +84,9 @@ public class NewsRepository {
 
     public MutableLiveData<ArrayList<Article>> getSearchResult() {
         return searchResult;
+    }
+
+    public MutableLiveData<Integer> getResultCount() {
+        return resultCount;
     }
 }

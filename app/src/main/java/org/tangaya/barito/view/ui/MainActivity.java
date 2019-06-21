@@ -9,20 +9,29 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import org.tangaya.barito.R;
 import org.tangaya.barito.adapter.ViewPagerAdapter;
 import org.tangaya.barito.viewmodel.MainViewModel;
 
-public class MainActivity extends AppCompatActivity implements HeadlineFragment.OnFragmentInteractionListener {
+import timber.log.Timber;
+
+public class MainActivity extends AppCompatActivity
+        implements HeadlineFragment.OnFragmentInteractionListener, SearchView.OnQueryTextListener {
 
     String searchKeyword;
+    private ViewPager viewPager;
+    private MainViewModel mViewModel;
+
+    public MainViewModel getMainViewModel() {
+        return mViewModel;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +41,14 @@ public class MainActivity extends AppCompatActivity implements HeadlineFragment.
         ViewPagerAdapter vpAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(vpAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
+
+        mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
+        Timber.d("Timber test main activity");
     }
 
     @Override
@@ -50,19 +63,7 @@ public class MainActivity extends AppCompatActivity implements HeadlineFragment.
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                Log.d("onQueryTextSubmit", "string: " + s);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                Log.d("onQueryTextChange", "string: " + s);
-                return false;
-            }
-        });
+        searchView.setOnQueryTextListener(this);
 
         return true;
     }
@@ -99,8 +100,34 @@ public class MainActivity extends AppCompatActivity implements HeadlineFragment.
         return headlineFragment;
     }
 
+    private SearchFragment obtainSearchFragment() {
+        SearchFragment searchFragment = (SearchFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.search_frame);
+
+        if (searchFragment == null) {
+            searchFragment = SearchFragment.newInstance();
+        }
+        return searchFragment;
+    }
+
+
     @Override
     public void onFragmentInteraction(Uri uri) {
         // todo
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Log.d("onQueryTextSubmit", "query: " + query);
+
+        mViewModel.searchNewsByKeyword(query);
+        viewPager.setCurrentItem(1);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Log.d("onQueryTextChange", "query: " + newText);
+        return false;
     }
 }
