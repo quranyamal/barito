@@ -120,8 +120,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onQueryTextSubmit(String query) {
         Log.d("onQueryTextSubmit", "query: " + query);
 
-        mViewModel.searchNewsByKeyword(query);
         viewPager.setCurrentItem(1);
+        mViewModel.searchNewsByKeyword(query);
         return false;
     }
 

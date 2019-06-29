@@ -119,7 +119,7 @@ public class SearchFragment extends Fragment {
 ////            progressDialog.setMessage("loading news...");
 ////            progressDialog.show();
 //
-////            NewsApi service = RetrofitService.createService(NewsApi.class);
+////            NewsApi service = NewsAPIService.createService(NewsApi.class);
 ////            Call<APIResponse> articlesCall = service.getSearchResult(searchKeyword, NewsApi.API_KEY);
 ////            articlesCall.enqueue(new Callback<APIResponse>() {
 ////

@@ -1,13 +1,15 @@
 package org.tangaya.barito.data.source;
 
+import org.tangaya.barito.BuildConfig;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitService {
+public class NewsAPIService {
 
-    private static final String BASE_URL = "http://newsapi.org";
+    private static final String BASE_URL = BuildConfig.API_BASE_URL;
 
     private static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)

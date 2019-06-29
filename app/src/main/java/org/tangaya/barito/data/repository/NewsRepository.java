@@ -3,10 +3,11 @@ package org.tangaya.barito.data.repository;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
+import org.tangaya.barito.BuildConfig;
 import org.tangaya.barito.data.model.APIResponse;
 import org.tangaya.barito.data.model.Article;
 import org.tangaya.barito.data.source.NewsApi;
-import org.tangaya.barito.data.source.RetrofitService;
+import org.tangaya.barito.data.source.NewsAPIService;
 
 import java.util.ArrayList;
 import retrofit2.Call;
@@ -22,6 +23,8 @@ public class NewsRepository {
     private MutableLiveData<ArrayList<Article>> headlines, searchResult;
     private MutableLiveData<Integer> resultCount;
 
+    private String apiKey = BuildConfig.API_KEY;
+
     public static NewsRepository getInstance() {
         if (newsRepository == null) {
             newsRepository = new NewsRepository();
@@ -30,14 +33,14 @@ public class NewsRepository {
     }
 
     public NewsRepository() {
-        service = RetrofitService.createService(NewsApi.class);
+        service = NewsAPIService.createService(NewsApi.class);
         headlines = new MutableLiveData<>();
         searchResult = new MutableLiveData<>();
         resultCount = new MutableLiveData<>();
     }
 
     private void fetchHeadlines() {
-        service.getHeadlineNews().enqueue(new Callback<APIResponse>() {
+        service.getHeadlineNews("id", apiKey).enqueue(new Callback<APIResponse>() {
             @Override
             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
                 if (response.isSuccessful()) {
@@ -62,7 +65,7 @@ public class NewsRepository {
         Log.d("searchNewsByKeyword", "manual logging. keyword: "+keyword);
         Timber.d("inside searchNewsByKeyword");
 
-        Call<APIResponse> articlesCall = service.getNewsByKeyword(keyword, NewsApi.API_KEY);
+        Call<APIResponse> articlesCall = service.getNewsByKeyword(keyword, apiKey);
         articlesCall.enqueue(new Callback<APIResponse>() {
             @Override
             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
