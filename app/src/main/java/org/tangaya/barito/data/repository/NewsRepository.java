@@ -3,13 +3,17 @@ package org.tangaya.barito.data.repository;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
+import com.google.gson.JsonElement;
+
 import org.tangaya.barito.BuildConfig;
-import org.tangaya.barito.data.model.APIResponse;
+import org.tangaya.barito.data.model.APIResponseOld;
 import org.tangaya.barito.data.model.Article;
 import org.tangaya.barito.data.source.NewsApi;
 import org.tangaya.barito.data.source.NewsAPIService;
 
 import java.util.ArrayList;
+
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,36 +43,42 @@ public class NewsRepository {
         resultCount = new MutableLiveData<>();
     }
 
-    private void fetchHeadlines() {
-        service.getHeadlineNews("id", apiKey).enqueue(new Callback<APIResponse>() {
-            @Override
-            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                if (response.isSuccessful()) {
-                    headlines.setValue(response.body().getArticles());
-                }
-            }
+//    private void fetchHeadlinesOld() {
+//        Timber.d("old fetch headline fired!!");
+//        service.getHeadlineNewsOld("id", apiKey).enqueue(new Callback<APIResponseOld>() {
+//            @Override
+//            public void onResponse(Call<APIResponseOld> call, Response<APIResponseOld> response) {
+//                if (response.isSuccessful()) {
+//                    headlines.setValue(response.body().getArticles());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<APIResponseOld> call, Throwable t) {
+//                headlines.setValue(null);
+//            }
+//        });
+//    }
 
-            @Override
-            public void onFailure(Call<APIResponse> call, Throwable t) {
-                headlines.setValue(null);
-            }
-        });
+    public Observable<JsonElement> executeFetchHeadline(String country, String apiKey) {
+        Timber.d("new fetch headline fired!!");
+        return service.getHeadlineNews(country, apiKey);
     }
 
-    public MutableLiveData<ArrayList<Article>> getHeadlines() {
-        fetchHeadlines();
-        // async! todo!
-        return headlines;
-    }
+//    public MutableLiveData<ArrayList<Article>> getHeadlinesOld() {
+//        fetchHeadlinesOld();
+//        // async! todo!
+//        return headlines;
+//    }
 
     public void searchNewsByKeyword(String keyword) {
         Log.d("searchNewsByKeyword", "manual logging. keyword: "+keyword);
         Timber.d("inside searchNewsByKeyword");
 
-        Call<APIResponse> articlesCall = service.getNewsByKeyword(keyword, apiKey);
-        articlesCall.enqueue(new Callback<APIResponse>() {
+        Call<APIResponseOld> articlesCall = service.getNewsByKeyword(keyword, apiKey);
+        articlesCall.enqueue(new Callback<APIResponseOld>() {
             @Override
-            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+            public void onResponse(Call<APIResponseOld> call, Response<APIResponseOld> response) {
                 Timber.d("inside onResponse");
                 if (response.isSuccessful()) {
                     Timber.d(keyword + " submitted");
@@ -79,7 +89,7 @@ public class NewsRepository {
             }
 
             @Override
-            public void onFailure(Call<APIResponse> call, Throwable t) {
+            public void onFailure(Call<APIResponseOld> call, Throwable t) {
                 searchResult.postValue(null);
             }
         });

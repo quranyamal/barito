@@ -1,26 +1,20 @@
 package org.tangaya.barito.view.ui;
 
-import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.tangaya.barito.R;
 import org.tangaya.barito.adapter.ArticleAdapter;
-import org.tangaya.barito.data.model.APIResponse;
-import org.tangaya.barito.data.model.Article;
+import org.tangaya.barito.data.model.APIResponseOld;
 import org.tangaya.barito.view.listener.NewsRecyclerTouchListener;
 import org.tangaya.barito.viewmodel.MainViewModel;
 
@@ -120,11 +114,11 @@ public class SearchFragment extends Fragment {
 ////            progressDialog.show();
 //
 ////            NewsApi service = NewsAPIService.createService(NewsApi.class);
-////            Call<APIResponse> articlesCall = service.getSearchResult(searchKeyword, NewsApi.API_KEY);
-////            articlesCall.enqueue(new Callback<APIResponse>() {
+////            Call<APIResponseOld> articlesCall = service.getSearchResult(searchKeyword, NewsApi.API_KEY);
+////            articlesCall.enqueue(new Callback<APIResponseOld>() {
 ////
 ////                @Override
-////                public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+////                public void onResponse(Call<APIResponseOld> call, Response<APIResponseOld> response) {
 ////                    Log.d("enqueue", "onResponse. response: " + response);
 ////
 ////                    progressDialog.dismiss();
@@ -132,7 +126,7 @@ public class SearchFragment extends Fragment {
 ////                }
 ////
 ////                @Override
-////                public void onFailure(Call<APIResponse> call, Throwable t) {
+////                public void onFailure(Call<APIResponseOld> call, Throwable t) {
 ////                    progressDialog.dismiss();
 ////                    Toast.makeText(getActivity(), "Ups, terdapat kesalahan :(", Toast.LENGTH_SHORT).show();
 ////
@@ -146,9 +140,9 @@ public class SearchFragment extends Fragment {
 //        }
 //    }
 
-    private void generateDataList(final APIResponse apiResponse) {
+    private void generateDataList(final APIResponseOld apiResponseOld) {
 
-        Log.d("SearchResultActivity", "articleList size: " + apiResponse.getArticles().size());
+        Log.d("SearchResultActivity", "articleList size: " + apiResponseOld.getArticles().size());
 //        recyclerView = getActivity().findViewById(R.id.news_recycler);
 //
 //        adapter = new ArticleAdapter(getActivity());
@@ -158,7 +152,7 @@ public class SearchFragment extends Fragment {
 //        recyclerView.addOnItemTouchListener(new NewsRecyclerTouchListener(getActivity().getApplicationContext(),
 //                recyclerView, (view, position) -> {
 //                    Intent intent = new Intent(getActivity().getApplicationContext(), NewsPageActivity.class);
-//                    intent.putExtra("url", apiResponse.getArticles().get(position).getUrl());
+//                    intent.putExtra("url", apiResponseOld.getArticles().get(position).getUrl());
 //
 //                    startActivity(intent);
 //
