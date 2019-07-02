@@ -19,7 +19,8 @@ public class MainViewModel extends ViewModel {
 
     private NewsRepository newsRepository;
     private final CompositeDisposable disposables = new CompositeDisposable();
-    private final MutableLiveData<ApiResponse> headlineResponse = new MutableLiveData<>();
+    private final MutableLiveData<ApiResponse> headlineApiResponse = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<Article>> headlineArticles = new MutableLiveData<>();
 
     public final MutableLiveData<Boolean> dataLoading = new MutableLiveData<>();
     public MutableLiveData<Integer> resultCount = new MutableLiveData<>();
@@ -33,19 +34,15 @@ public class MainViewModel extends ViewModel {
         newsRepository = NewsRepository.getInstance();
     }
 
-    public MutableLiveData<ApiResponse> getHeadlines() {
-        return headlineResponse;
-    }
-
     public void hitHeadlineApi(String country, String apiKey) {
 
         disposables.add(newsRepository.executeFetchHeadline(country, apiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe((d) -> headlineResponse.setValue(ApiResponse.loading()))
+                .doOnSubscribe((d) -> headlineApiResponse.setValue(ApiResponse.loading()))
                 .subscribe(
-                        result -> headlineResponse.setValue(ApiResponse.success(result)),
-                        throwable -> headlineResponse.setValue(ApiResponse.error(throwable))
+                        result -> headlineApiResponse.setValue(ApiResponse.success(result)),
+                        throwable -> headlineApiResponse.setValue(ApiResponse.error(throwable))
                 ));
 
     }
@@ -54,8 +51,12 @@ public class MainViewModel extends ViewModel {
 //        return newsRepository.getHeadlinesOld();
 //    }
 
-    public MutableLiveData<ApiResponse> getHeadlineResponse() {
-        return headlineResponse;
+    public MutableLiveData<ApiResponse> getHeadlineApiResponse() {
+        return headlineApiResponse;
+    }
+
+    public MutableLiveData<ArrayList<Article>> getHeadlineArticles() {
+        return headlineArticles;
     }
 
     public void searchNewsByKeyword(String keyword) {

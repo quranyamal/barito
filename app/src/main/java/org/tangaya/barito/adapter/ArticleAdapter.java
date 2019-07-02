@@ -53,17 +53,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.CustomVi
 
     @Override
     public void onBindViewHolder(CustomViewHolder holder, int position) {
-        Log.d("data-1"+position, ": "+ data.get(position).toString());
 
         holder.txtTitle.setText(data.get(position).getTitle());
         Picasso.Builder builder = new Picasso.Builder(context);
         builder.downloader(new OkHttp3Downloader(context));
 
+        Picasso.get().setIndicatorsEnabled(true);
+        Picasso.get().setLoggingEnabled(true);
+
         if (data.get(position).getUrlToImage() != null) {
-            builder.build().load(data.get(position).getUrlToImage())
-                    .placeholder((R.drawable.ic_launcher_background))
-                    .error(R.drawable.ic_launcher_background)
-                    .into(holder.coverImage);
+            Picasso.get().load(data.get(position).getUrlToImage()).into(holder.coverImage);
         }
     }
 

@@ -1,10 +1,12 @@
 package org.tangaya.barito.view.ui;
 
 import android.app.ProgressDialog;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,14 +15,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 
 import org.tangaya.barito.BuildConfig;
 import org.tangaya.barito.R;
 import org.tangaya.barito.adapter.ArticleAdapter;
+import org.tangaya.barito.data.model.Article;
 import org.tangaya.barito.utlls.ApiResponse;
 import org.tangaya.barito.view.listener.NewsRecyclerTouchListener;
 import org.tangaya.barito.viewmodel.MainViewModel;
+
+import java.util.ArrayList;
 
 import timber.log.Timber;
 
@@ -44,7 +51,7 @@ public class HeadlineFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("memuat berita");
+        progressDialog.setMessage("loading news...");
         progressDialog.setCancelable(false);
 
         mViewModel = ((MainActivity) getActivity()).getMainViewModel();
@@ -52,16 +59,9 @@ public class HeadlineFragment extends Fragment {
 
         adapter = new ArticleAdapter(getActivity());
 
-//        mViewModel.getHeadlinesOld().observe(getActivity(), articles -> {
-//            if (articles != null) {
-//                adapter.setData(articles);
-//                adapter.notifyDataSetChanged();
-//            }
-//        });
-
         setupRecyclerView(getView());
 
-        mViewModel.getHeadlines().observe(this, this::consumeResponse);
+        mViewModel.getHeadlineApiResponse().observe(this, this::consumeResponse);
         mViewModel.hitHeadlineApi("id", BuildConfig.API_KEY);
     }
 
@@ -87,7 +87,16 @@ public class HeadlineFragment extends Fragment {
     private void renderSuccessResponse(JsonElement response) {
         Timber.d("onRenderSuccessResponse");
         if (!response.isJsonNull()) {
-            Timber.d(response.toString());
+
+            JsonElement articlesJson = response.getAsJsonObject().getAsJsonArray("articles");
+            Gson gson = new Gson();
+            ArrayList<Article> articles = gson.fromJson(articlesJson, new TypeToken<ArrayList<Article>>(){}.getType());
+
+            mViewModel.getHeadlineArticles().setValue(articles);
+
+            adapter.setData(articles);
+            adapter.notifyDataSetChanged();
+
         } else {
             Toast.makeText(getActivity(), "terdapat kesalahan :(", Toast.LENGTH_SHORT).show();
         }
@@ -123,10 +132,12 @@ public class HeadlineFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new NewsRecyclerTouchListener(getActivity().getApplicationContext(),
                 recyclerView, (view, position) -> {
-//                    Intent intent = new Intent(getActivity().getApplicationContext(), NewsPageActivity.class);
-//                    intent.putExtra("url", mViewModel.getHeadlinesOld().getValue().get(position).getUrl());
-//
-//                    startActivity(intent);
+                    String url = mViewModel.getHeadlineArticles().getValue().get(position).getUrl();
+                    if (!url.equals("")) {
+                        Intent intent = new Intent(getActivity().getApplicationContext(), NewsPageActivity.class);
+                        intent.putExtra("url", url);
+                        startActivity(intent);
+                    }
                 }));
     }
 
