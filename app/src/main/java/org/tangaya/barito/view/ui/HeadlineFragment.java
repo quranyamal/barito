@@ -1,12 +1,10 @@
 package org.tangaya.barito.view.ui;
 
 import android.app.ProgressDialog;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -133,6 +131,7 @@ public class HeadlineFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new NewsRecyclerTouchListener(getActivity().getApplicationContext(),
                 recyclerView, (view, position) -> {
                     String url = mViewModel.getHeadlineArticles().getValue().get(position).getUrl();
+                    Timber.d("addOnItemTouchListener. url: " + url);
                     if (!url.equals("")) {
                         Intent intent = new Intent(getActivity().getApplicationContext(), NewsPageActivity.class);
                         intent.putExtra("url", url);
