@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.tangaya.barito.R;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity
     String searchKeyword;
     private ViewPager viewPager;
     private MainViewModel mViewModel;
+    private SearchView searchView;
 
     public MainViewModel getMainViewModel() {
         return mViewModel;
@@ -38,6 +40,10 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
+        Timber.d("starting onCreate");
+
+        mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
         ViewPagerAdapter vpAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
@@ -46,26 +52,44 @@ public class MainActivity extends AppCompatActivity
 
         tabLayout.setupWithViewPager(viewPager);
 
-        mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-
-        Timber.d("Timber test main activity");
+        Timber.d("end of onCreate");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        Timber.d("starting onCreateOptionsMenu");
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
 
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setOnQueryTextListener(this);
 
+        Timber.d("end of onCreateOptionsMenu");
+
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.search:
+//                searchView.requestFocusFromTouch();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public SearchView getSearchView() {
+        return searchView;
     }
 
     @Override
@@ -120,8 +144,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onQueryTextSubmit(String query) {
         Log.d("onQueryTextSubmit", "query: " + query);
 
-        viewPager.setCurrentItem(1);
         mViewModel.searchNewsByKeyword(query);
+        viewPager.setCurrentItem(1);
+        searchView.clearFocus();
         return false;
     }
 

@@ -7,6 +7,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="coming soon" />
+        android:text="coming soon"
+        android:textAlignment="center"
+        android:gravity="center"/>
 
 </android.support.constraint.ConstraintLayout>

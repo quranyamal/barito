@@ -18,7 +18,8 @@
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
-            android:name="org.tangaya.barito.view.ui.MainActivity">
+            android:name="org.tangaya.barito.view.ui.MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
