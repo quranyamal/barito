@@ -1,6 +1,7 @@
 package org.tangaya.barito.data.repository;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.JsonElement;
@@ -60,9 +61,15 @@ public class NewsRepository {
 //        });
 //    }
 
-    public Observable<JsonElement> executeFetchHeadline(String country, String apiKey) {
+    public Observable<JsonElement> fetchHeadline(String country) {
         Timber.d("new fetch headline fired!!");
-        return service.getHeadlineNews(country, apiKey);
+        return service.getHeadlineNews(country);
+    }
+
+    public Observable<JsonElement> fetchHeadlineNew(@Nullable String country, @Nullable String category,
+                                                    @Nullable String source, @Nullable String keywords,
+                                                    @Nullable Integer pageSize, @Nullable Integer page) {
+        return service.getHeadlines(country, category, source, keywords, pageSize, page);
     }
 
 //    public MutableLiveData<ArrayList<Article>> getHeadlinesOld() {
@@ -75,7 +82,7 @@ public class NewsRepository {
         Log.d("searchNewsByKeyword", "manual logging. keyword: "+keyword);
         Timber.d("inside searchNewsByKeyword");
 
-        Call<APIResponseOld> articlesCall = service.getNewsByKeyword(keyword, apiKey);
+        Call<APIResponseOld> articlesCall = service.getNewsByKeyword(keyword);
         articlesCall.enqueue(new Callback<APIResponseOld>() {
             @Override
             public void onResponse(Call<APIResponseOld> call, Response<APIResponseOld> response) {

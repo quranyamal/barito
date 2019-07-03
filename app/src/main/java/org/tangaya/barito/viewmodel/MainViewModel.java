@@ -2,6 +2,7 @@ package org.tangaya.barito.viewmodel;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.tangaya.barito.data.model.Article;
@@ -34,9 +35,9 @@ public class MainViewModel extends ViewModel {
         newsRepository = NewsRepository.getInstance();
     }
 
-    public void hitHeadlineApi(String country, String apiKey) {
+    public void hitHeadlineApi(String country) {
 
-        disposables.add(newsRepository.executeFetchHeadline(country, apiKey)
+        disposables.add(newsRepository.fetchHeadline(country)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe((d) -> headlineApiResponse.setValue(ApiResponse.loading()))
@@ -44,12 +45,20 @@ public class MainViewModel extends ViewModel {
                         result -> headlineApiResponse.setValue(ApiResponse.success(result)),
                         throwable -> headlineApiResponse.setValue(ApiResponse.error(throwable))
                 ));
-
     }
 
-//    public MutableLiveData<ArrayList<Article>> getHeadlinesOld() {
-//        return newsRepository.getHeadlinesOld();
-//    }
+    public void hitHeadlineApiNew(@Nullable String country, @Nullable String category,
+                                  @Nullable String source, @Nullable String keywords,
+                                  @Nullable Integer pageSize, @Nullable Integer page) {
+        disposables.add(newsRepository.fetchHeadlineNew(country, category, source, keywords, pageSize, page)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe((d) -> headlineApiResponse.setValue(ApiResponse.loading()))
+                .subscribe(
+                        result -> headlineApiResponse.setValue(ApiResponse.success(result)),
+                        throwable -> headlineApiResponse.setValue(ApiResponse.error(throwable))
+                ));
+    }
 
     public MutableLiveData<ApiResponse> getHeadlineApiResponse() {
         return headlineApiResponse;

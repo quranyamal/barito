@@ -60,7 +60,8 @@ public class HeadlineFragment extends Fragment {
         setupRecyclerView(getView());
 
         mViewModel.getHeadlineApiResponse().observe(this, this::consumeResponse);
-        mViewModel.hitHeadlineApi("us", BuildConfig.API_KEY);
+//        mViewModel.hitHeadlineApi("us", BuildConfig.API_KEY);
+        mViewModel.hitHeadlineApi("jp");
     }
 
     private void consumeResponse(ApiResponse apiResponse) {
