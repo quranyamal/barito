@@ -9,5 +9,4 @@ public class Source {
     @SerializedName("name")
     private String name;
 
-
 }
