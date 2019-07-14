@@ -8,9 +8,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -128,6 +132,36 @@ public class HeadlineFragment extends Fragment {
                         startActivity(intent);
                     }
                 }));
+
+        registerForContextMenu(recyclerView);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.article_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int position = -1;
+
+        try {
+            position = adapter.getPosition();
+        } catch (Exception e) {
+            Timber.d(e.getLocalizedMessage());
+            return super.onContextItemSelected(item);
+        }
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.bookmark:
+                Toast.makeText(getActivity(), "article " + position + "bookmarked", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

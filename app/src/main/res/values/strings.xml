@@ -3,6 +3,7 @@
     <string name="search_title">Search</string>
     <string name="setting_title">Setting</string>
     <string name="save_title">Save</string>
+    <string name="bookmark_title">bookmark</string>
     <string name="search_hint">Type a keyword</string>
 
     <string name="preference_file_key">Setting Preferences</string>
