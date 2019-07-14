@@ -4,8 +4,8 @@ import android.app.SearchManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +26,8 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity
         implements HeadlineFragment.OnFragmentInteractionListener, SearchView.OnQueryTextListener {
 
+    private SharedPreferences sharedPref;
+
     String searchKeyword;
     private ViewPager viewPager;
     private MainViewModel mViewModel;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity
         Timber.d("starting onCreate");
 
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mViewModel.init();
 
         ViewPagerAdapter vpAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -53,6 +56,10 @@ public class MainActivity extends AppCompatActivity
         tabLayout.setupWithViewPager(viewPager);
 
         Timber.d("end of onCreate");
+
+        Context context = getApplication();
+        sharedPref = context.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
     }
 
     @Override
@@ -61,14 +68,13 @@ public class MainActivity extends AppCompatActivity
         Timber.d("starting onCreateOptionsMenu");
 
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
+        inflater.inflate(R.menu.main_menu, menu);
 
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
-
         searchView.setOnQueryTextListener(this);
 
         Timber.d("end of onCreateOptionsMenu");
@@ -81,15 +87,15 @@ public class MainActivity extends AppCompatActivity
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.search:
-//                searchView.requestFocusFromTouch();
+                searchView.requestFocusFromTouch();
+                return true;
+            case R.id.setting:
+                Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public SearchView getSearchView() {
-        return searchView;
     }
 
     @Override
@@ -106,34 +112,14 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public static MainViewModel obtainViewModel(MainActivity activity) {
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        return ViewModelProviders.of(activity).get(MainViewModel.class);
+        int countryId = sharedPref.getInt(getString(R.string.saved_country_key),0);
+        String country = getResources().getStringArray(R.array.countries_array)[countryId];
+        mViewModel.hitHeadlineApi(country);
     }
-
-    @NonNull
-    private HeadlineFragment obtainHeadlineFragment() {
-
-        HeadlineFragment headlineFragment = (HeadlineFragment)getSupportFragmentManager()
-                .findFragmentById(R.id.headline_frame);
-
-        if(headlineFragment == null ) {
-            headlineFragment = HeadlineFragment.newInstance();
-        }
-
-        return headlineFragment;
-    }
-
-    private SearchFragment obtainSearchFragment() {
-        SearchFragment searchFragment = (SearchFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.search_frame);
-
-        if (searchFragment == null) {
-            searchFragment = SearchFragment.newInstance();
-        }
-        return searchFragment;
-    }
-
 
     @Override
     public void onFragmentInteraction(Uri uri) {

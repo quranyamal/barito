@@ -46,19 +46,19 @@ public class MainViewModel extends ViewModel {
                         throwable -> headlineApiResponse.setValue(ApiResponse.error(throwable))
                 ));
     }
-
-    public void hitHeadlineApiNew(@Nullable String country, @Nullable String category,
-                                  @Nullable String source, @Nullable String keywords,
-                                  @Nullable Integer pageSize, @Nullable Integer page) {
-        disposables.add(newsRepository.fetchHeadlineNew(country, category, source, keywords, pageSize, page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe((d) -> headlineApiResponse.setValue(ApiResponse.loading()))
-                .subscribe(
-                        result -> headlineApiResponse.setValue(ApiResponse.success(result)),
-                        throwable -> headlineApiResponse.setValue(ApiResponse.error(throwable))
-                ));
-    }
+//
+//    public void hitHeadlineApiNew(@Nullable String country, @Nullable String category,
+//                                  @Nullable String source, @Nullable String keywords,
+//                                  @Nullable Integer pageSize, @Nullable Integer page) {
+//        disposables.add(newsRepository.fetchHeadlineNew(country, category, source, keywords, pageSize, page)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnSubscribe((d) -> headlineApiResponse.setValue(ApiResponse.loading()))
+//                .subscribe(
+//                        result -> headlineApiResponse.setValue(ApiResponse.success(result)),
+//                        throwable -> headlineApiResponse.setValue(ApiResponse.error(throwable))
+//                ));
+//    }
 
     public MutableLiveData<ApiResponse> getHeadlineApiResponse() {
         return headlineApiResponse;

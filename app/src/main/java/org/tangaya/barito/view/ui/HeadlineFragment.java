@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-import org.tangaya.barito.BuildConfig;
 import org.tangaya.barito.R;
 import org.tangaya.barito.adapter.ArticleAdapter;
 import org.tangaya.barito.data.model.Article;
@@ -53,15 +52,11 @@ public class HeadlineFragment extends Fragment {
         progressDialog.setCancelable(false);
 
         mViewModel = ((MainActivity) getActivity()).getMainViewModel();
-        mViewModel.init();
+        mViewModel.getHeadlineApiResponse().observe(this, this::consumeResponse);
 
         adapter = new ArticleAdapter(getActivity());
-
         setupRecyclerView(getView());
 
-        mViewModel.getHeadlineApiResponse().observe(this, this::consumeResponse);
-//        mViewModel.hitHeadlineApi("us", BuildConfig.API_KEY);
-        mViewModel.hitHeadlineApi("jp");
     }
 
     private void consumeResponse(ApiResponse apiResponse) {
@@ -115,12 +110,6 @@ public class HeadlineFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         return inflater.inflate(R.layout.fragment_headline, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-
-//        setupRecyclerView(view);
     }
 
     private void setupRecyclerView(View parent) {

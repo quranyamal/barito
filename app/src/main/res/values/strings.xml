@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Barito</string>
     <string name="search_title">Search</string>
+    <string name="setting_title">Setting</string>
+    <string name="save_title">Save</string>
     <string name="search_hint">Type a keyword</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="preference_file_key">Setting Preferences</string>
+    <string name="saved_country_key">id</string>
 </resources>
