@@ -84,13 +84,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        Intent intent;
+
         switch (item.getItemId()) {
             case R.id.search:
                 searchView.requestFocusFromTouch();
                 return true;
             case R.id.setting:
-                Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+                intent = new Intent(getApplicationContext(), SettingActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.about:
+                intent = new Intent(getApplicationContext(), AboutActivity.class);
                 startActivity(intent);
                 return true;
             default:

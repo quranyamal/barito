@@ -39,8 +39,16 @@ public class SearchFragment extends Fragment {
         setHasOptionsMenu(true);
         adapter = new ArticleAdapter(getActivity());
 
+
+        Log.d("onCreate SF", "mViewModel initialized");
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         mViewModel = ((MainActivity) getActivity()).getMainViewModel();
-        mViewModel.init();
+//        mViewModel.init();
         mViewModel.getSearchResult().observe(getActivity(), articles -> {
             if (articles != null) {
                 adapter.setData(articles);
@@ -48,8 +56,9 @@ public class SearchFragment extends Fragment {
             }
         });
 
-
-        Log.d("onCreate SF", "mViewModel initialized");
+        resultCount = getActivity().findViewById(R.id.result_count);
+        mViewModel.getResultCount().observe(getActivity(), count ->
+                resultCount.setText(""));
     }
 
     @Nullable
@@ -66,10 +75,6 @@ public class SearchFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         Timber.d("Timber log. onViewCreated");
-
-        resultCount = getActivity().findViewById(R.id.result_count);
-        mViewModel.getResultCount().observe(getActivity(), count ->
-                resultCount.setText(""));
 //                resultCount.setText("showing "+mViewModel.getSearchResult().getValue().size() +
 //                        "of " + count.toString()+" result(s)"));
 
