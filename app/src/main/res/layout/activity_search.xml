@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/search_frame_old">
+    android:id="@+id/search_frame">
 
     <TextView
-        android:id="@+id/result_count_old"
+        android:id="@+id/result_count"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="type keyword on the app bar"
@@ -16,7 +16,7 @@
         android:layout_margin="10dp"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/news_recycler_old"
+        android:id="@+id/news_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 
 import org.tangaya.barito.data.model.APIResponseOld;
 import org.tangaya.barito.data.model.Article;
+import org.tangaya.barito.data.model.Source;
 import org.tangaya.barito.data.source.NewsApi;
 import org.tangaya.barito.data.source.NewsAPIService;
 
@@ -25,6 +26,7 @@ public class NewsRepository {
     private NewsApi service;
 
     private MutableLiveData<ArrayList<Article>> headlines, searchResult;
+    private MutableLiveData<ArrayList<Source>> sources;
     private MutableLiveData<Integer> resultCount;
 
     public static NewsRepository getInstance() {
@@ -37,8 +39,14 @@ public class NewsRepository {
     public NewsRepository() {
         service = NewsAPIService.createService(NewsApi.class);
         headlines = new MutableLiveData<>();
+        sources = new MutableLiveData<>();
         searchResult = new MutableLiveData<>();
         resultCount = new MutableLiveData<>();
+    }
+
+    public Observable<JsonElement> fetchSeources(String category, String language, String country) {
+        Timber.d("fetching sources");
+        return service.getSources(category, language, country);
     }
 
     public Observable<JsonElement> fetchHeadline(String country) {
@@ -77,6 +85,10 @@ public class NewsRepository {
                 searchResult.postValue(null);
             }
         });
+    }
+
+    public MutableLiveData<ArrayList<Source>> getSources() {
+        return sources;
     }
 
     public MutableLiveData<ArrayList<Article>> getSearchResult() {

@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
 
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(this);
@@ -87,14 +87,14 @@ public class MainActivity extends AppCompatActivity
         Intent intent;
 
         switch (item.getItemId()) {
-            case R.id.search:
+            case R.id.menu_search:
                 searchView.requestFocusFromTouch();
                 return true;
-            case R.id.setting:
+            case R.id.menu_setting:
                 intent = new Intent(getApplicationContext(), SettingActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.about:
+            case R.id.menu_about:
                 intent = new Intent(getApplicationContext(), AboutActivity.class);
                 startActivity(intent);
                 return true;
@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity
         int countryId = sharedPref.getInt(getString(R.string.saved_country_key),0);
         String country = getResources().getStringArray(R.array.countries_array)[countryId];
         mViewModel.hitHeadlineApi(country);
+        mViewModel.hitSourceApi(null, null, null);
     }
 
     @Override
@@ -136,8 +137,12 @@ public class MainActivity extends AppCompatActivity
         Log.d("onQueryTextSubmit", "query: " + query);
 
         mViewModel.searchNewsByKeyword(query);
-        viewPager.setCurrentItem(1);
+//        viewPager.setCurrentItem(1);
         searchView.clearFocus();
+
+        Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+        startActivity(intent);
+
         return false;
     }
 
