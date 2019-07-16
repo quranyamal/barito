@@ -4,9 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import org.tangaya.barito.view.ui.BookmarkFragment;
 import org.tangaya.barito.view.ui.HeadlineFragment;
-import org.tangaya.barito.view.ui.SearchFragment;
 import org.tangaya.barito.view.ui.SourcesFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {

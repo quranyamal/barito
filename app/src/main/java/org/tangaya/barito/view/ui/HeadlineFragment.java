@@ -157,7 +157,7 @@ public class HeadlineFragment extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.menu_bookmark:
-                Toast.makeText(getActivity(), "article " + position + "bookmarked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "article-" + position + " bookmarked", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onContextItemSelected(item);

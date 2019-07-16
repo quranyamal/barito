@@ -87,6 +87,9 @@ public class MainActivity extends AppCompatActivity
         Intent intent;
 
         switch (item.getItemId()) {
+            case R.id.menu_bookmark:
+                intent = new Intent(getApplicationContext(), BookmarkActivity.class);
+                startActivity(intent);
             case R.id.menu_search:
                 searchView.requestFocusFromTouch();
                 return true;
