@@ -139,12 +139,17 @@ public class MainActivity extends AppCompatActivity
     public boolean onQueryTextSubmit(String query) {
         Log.d("onQueryTextSubmit", "query: " + query);
 
-        mViewModel.searchNewsByKeyword(query);
+//        mViewModel.searchNewsByKeyword(query);
 //        viewPager.setCurrentItem(1);
         searchView.clearFocus();
 
         Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+        intent.setAction(Intent.ACTION_SEARCH);
+        intent.putExtra(SearchManager.QUERY, query);
         startActivity(intent);
+
+        searchView.setQuery("", false);
+        searchView.setIconified(true);
 
         return false;
     }

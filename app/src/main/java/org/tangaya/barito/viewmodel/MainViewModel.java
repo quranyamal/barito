@@ -99,11 +99,11 @@ public class MainViewModel extends ViewModel {
         return headlineArticles;
     }
 
-    public void searchNewsByKeyword(String keyword) {
-        Timber.d(keyword + " submitted. log by timber");
-        Log.d("searchNewsByKeyword", keyword + " submitted. manual logging");
-        newsRepository.searchNewsByKeyword(keyword);
-    }
+//    public void searchNewsByKeyword(String keyword) {
+//        Timber.d(keyword + " submitted. log by timber");
+//        Log.d("searchNewsByKeyword", keyword + " submitted. manual logging");
+//        newsRepository.searchNewsByKeyword(keyword);
+//    }
 
     public MutableLiveData<ArrayList<Article>> getSearchResult() {
         return newsRepository.getSearchResult();
