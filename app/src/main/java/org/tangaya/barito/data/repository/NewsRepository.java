@@ -45,13 +45,17 @@ public class NewsRepository {
     }
 
     public Observable<JsonElement> fetchSeources(String category, String language, String country) {
-        Timber.d("fetching sources");
+        Log.d("NewsRepo", "Fetching news sources...");
         return service.getSources(category, language, country);
     }
 
     public Observable<JsonElement> fetchHeadline(String country) {
-        Timber.d("new fetch headline fired!!");
-        return service.getHeadlines(country, null, null, null, 12, null);
+        Log.d("NewsRepo", "Fetching headline.. country="+country);
+        if (country.equals("All")) {
+            return service.getHeadlines(null,null, null, null, 12, null);
+        } else {
+            return service.getHeadlines(country, null, null, null, 12, null);
+        }
     }
 
     public Observable<JsonElement> fetchHeadlineNew(@Nullable String country, @Nullable String category,
@@ -61,8 +65,7 @@ public class NewsRepository {
     }
 
     public void searchNewsByKeyword(String keyword) {
-        Log.d("searchNewsByKeyword", "manual logging. keyword: "+keyword);
-        Timber.d("inside searchNewsByKeyword");
+        Timber.d("Search news fired by keyword: " + keyword);
 
         Call<APIResponseOld> articlesCall = service.getEverything(keyword, null, null,
                 null, null, null, null, null,
