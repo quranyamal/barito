@@ -1,7 +1,7 @@
 package org.tangaya.barito.view.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.tangaya.barito.R;
 

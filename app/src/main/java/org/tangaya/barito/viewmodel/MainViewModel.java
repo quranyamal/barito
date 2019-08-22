@@ -1,9 +1,7 @@
 package org.tangaya.barito.viewmodel;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.support.annotation.Nullable;
-import android.util.Log;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import org.tangaya.barito.data.model.Article;
 import org.tangaya.barito.data.model.Source;

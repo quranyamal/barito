@@ -1,7 +1,7 @@
 package org.tangaya.barito.data.repository;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.JsonElement;
